@@ -1,0 +1,19 @@
+FROM eclipse-temurin:21-jdk
+
+WORKDIR /app
+
+COPY target/dockerImagePractice-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 8084
+
+CMD ["java","-jar","app.jar"]
+
+
+
+# How this works
+# From openjdk:21
+# pull full jdk image
+# contains compiler + tools
+# Large(~400md)
+
+# Beginner doesn't think about size

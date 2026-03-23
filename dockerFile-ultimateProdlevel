@@ -1,12 +1,12 @@
 # -------------dependency layer --------
 
-From maven:3.9.6-eclipse-temurin-21 AS deps
+FROM maven:3.9.6-eclipse-temurin-21 AS deps
 WORKDIR /build
 COPY pom.xml .
-Run mvn -B dependency:go-offline
+RUN mvn -B dependency:go-offline
 
 #----------------Build layer ---------
-From maven:3.9.6-eclipse-temurin-21 AS builder
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 WORKDIR /build
 COPY --from=deps /root/.m2 /root/.m2
 COPY pom.xml .
@@ -15,11 +15,11 @@ RUN mvn -B clean package -DskipTests
 
 
 #--------------Runtime-------------
-From gcr.io/distroless/java21-debian12
+FROM gcr.io/distroless/java21-debian12
 WORKDIR /app
 
 # create a user
-Run  useradd -m nonroot
+RUN  useradd -m nonroot
 
 COPY --from=builder /build/target/*.jar app.jar
 EXPOSE 8084

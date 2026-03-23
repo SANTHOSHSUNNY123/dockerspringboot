@@ -1,0 +1,61 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: springboot-ingress
+
+
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: springboot.local
+    http:
+     paths:
+
+     - path: /api
+       pathType: Prefix
+       backend:
+        service:
+         name: springboot-service
+         port:
+          number: 8084
+
+
+
+
+# let say if your working in microservice application single domain is use to redirect multipile service how to right in yaml file 
+# check below we have to right under the paths only like below this will allow to redirect multipile service api using single domain 
+# using Nginx-ingress etc htt://springboot.local/api/call ,http://springboot.local/orders, http://springboot.local/payments
+          
+      # - path: /orders
+      #  pathType: Prefix
+      #  backend:
+      #   service:
+      #     name: order-service 
+      #     port:
+      #      number: 8080
+
+
+      # - path: /payments
+      #   pathType: Prefix
+      #   backend:
+      #    service:
+      #     name: payment-service
+      #     port:
+      #      number: 8080
+
+
+#--------------Traffice flow in microservices------
+
+# Browser
+#    ↓
+# company.local
+#    ↓
+# Ingress Controller
+#    ↓
+#  ┌─────────────┬─────────────┬─────────────┐
+#  │             │             │
+# /user       /orders      /payments
+#  │             │             │
+# user-service order-service payment-service
+#  │             │             │
+# pods          pods          pods
